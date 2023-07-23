@@ -1,4 +1,4 @@
-//Fichero de rutas
+//Fichero de rutas de Ejercicios
 
 const express = require('express');
 const {getAllEjercicios, setNewEjercicio, updateEjercicio, deleteEjercicio} = require('../controllers/ejercicios.controller');
