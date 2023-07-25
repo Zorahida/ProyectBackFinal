@@ -62,4 +62,14 @@ const deleteUsuario = async(req, res) =>{
     }
 }
 
-module.exports = {getAllUsuarios, setNewUsuario, updateUsuario, deleteUsuario};
+const getUsuarioMail = async(req, res)=>{
+    try{
+        const {correo} = req.params
+        const userCorreo = await Usuario.findOne({ correo: correo });
+        return res.status(200).json(userCorreo)
+    }catch(error){
+        console.log(error)
+    }
+}
+
+module.exports = {getAllUsuarios, setNewUsuario, updateUsuario, deleteUsuario, getUsuarioMail};
