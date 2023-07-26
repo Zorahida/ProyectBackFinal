@@ -7,7 +7,7 @@ const loginUser = async (req, res) => {
     try {
       const userInfo = await Usuario.findOne({ correo: req.body.correo });
       if (!userInfo) {
-        return res.status(400).json({ message: "El email es incorrecto" });
+        return res.status(404).json({ message: "El email es incorrecto" });
       }
       //Buscamos en la BD con findOne, que va a devolver un solo objeto/valor, el usuario al que corresponde el email del formulario
       
@@ -18,6 +18,7 @@ const loginUser = async (req, res) => {
 
           //generar un token
     const token = generateSign(userInfo.id, userInfo.correo);
+
     return res.status(200).json({token, userInfo}); 
     // me devuelve la info del token y del usuario
   } catch (error) {
