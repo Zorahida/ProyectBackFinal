@@ -1,5 +1,29 @@
 const Usuario = require("../models/usuarios.model");
 const bcrypt = require('bcrypt');
+const { generateSign } = require("../../utils/jwt");
+
+
+const loginUser = async (req, res) => {
+    try {
+      const userInfo = await Usuario.findOne({ correo: req.body.correo });
+      if (!userInfo) {
+        return res.status(400).json({ message: "El email es incorrecto" });
+      }
+      //Buscamos en la BD con findOne, que va a devolver un solo objeto/valor, el usuario al que corresponde el email del formulario
+      
+      if (!bcrypt.compareSync(req.body.password, userInfo.password)) {
+        return res.status(400).json({ message: "La contraseña es incorrecta" });
+      }
+      //.comparesync -> compara si lo que escribió el usuario coincide con lo que me ha devuelto la BD cuando he buscado con ese findOne
+
+          //generar un token
+    const token = generateSign(userInfo.id, userInfo.correo);
+    return res.status(200).json({token, userInfo}); 
+    // me devuelve la info del token y del usuario
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
 
 //Devuelve los usuarios
 const getAllUsuarios = async(req, res) =>{
@@ -72,4 +96,25 @@ const getUsuarioMail = async(req, res)=>{
     }
 }
 
-module.exports = {getAllUsuarios, setNewUsuario, updateUsuario, deleteUsuario, getUsuarioMail};
+const adminRole = async (req, res) => {
+    try {
+      res.status(200).json({
+        user: req.user,
+        message: 'Eres administrador',
+        role: req.user.role,
+      });
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  };
+
+  const checkSession = async(req,res) => {
+    try {
+res.status(200).json(req.user); //devuelve la info del usario logado desde auth.js - isAuth
+    }catch{
+        return res.status(500).json(error);
+    }
+  }
+
+
+module.exports = { loginUser, getAllUsuarios, setNewUsuario, updateUsuario, deleteUsuario, getUsuarioMail, adminRole, checkSession };

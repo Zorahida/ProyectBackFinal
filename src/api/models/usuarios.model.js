@@ -15,7 +15,8 @@ const usuariosSchema = new Schema(
         objetivo: {type: Number, required: true},
         altura: {type: Number, required: true},
         edad: {type: Number, required: true},
-        genero: {type: String, required: true},    
+        genero: {type: String, required: true},   
+       role: {type: String, default: "user", enum:["admin", "user"]}
     },{
         timestamps: true
     }
